@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timezone/data/latest_all.dart' as tz_data;
+import 'package:timezone/timezone.dart' as tz;
 import 'dart:convert';
 
 class NotificationsScreen extends StatefulWidget {
@@ -18,8 +20,19 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   @override
   void initState() {
     super.initState();
+    _initializeTimezone();
     _loadData();
     _initializeLocalNotifications();
+  }
+
+  Future<void> _initializeTimezone() async {
+    tz_data.initializeTimeZones();
+    try {
+      tz.setLocalLocation(tz.getLocation('America/New_York')); // Default timezone
+    } catch (e) {
+      // If timezone location fails, use UTC
+      tz.setLocalLocation(tz.UTC);
+    }
   }
 
   Future<void> _loadData() async {
@@ -40,7 +53,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     await prefs.setStringList('notificationTimes', selectedTimes);
   }
 
-  void _initializeLocalNotifications() {
+  void _initializeLocalNotifications() async {
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     const androidInitializationSettings = AndroidInitializationSettings('app_icon');
     const initializationSettings = InitializationSettings(
@@ -48,7 +61,19 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       iOS: DarwinInitializationSettings(),
     );
 
-    flutterLocalNotificationsPlugin!.initialize(initializationSettings);
+    await flutterLocalNotificationsPlugin!.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: (NotificationResponse response) {
+        // Handle notification tap
+      },
+    );
+
+    // Request permissions for Android 13+
+    final androidPlugin = flutterLocalNotificationsPlugin!.resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>();
+    if (androidPlugin != null) {
+      await androidPlugin.requestNotificationsPermission();
+    }
   }
 
   Future<void> _sendMobileNotification() async {
@@ -58,7 +83,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       channelDescription: 'Habit Reminder Notifications',
       importance: Importance.high,
       priority: Priority.high,
-      // Removed the custom icon parameter
     );
     const platformChannelSpecifics = NotificationDetails(
       android: androidPlatformChannelSpecifics,
@@ -70,6 +94,74 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       "It's time to work on your habits!",
       platformChannelSpecifics,
     );
+  }
+
+  Future<void> _scheduleDailyNotifications() async {
+    if (!notificationsEnabled || selectedHabits.isEmpty || selectedTimes.isEmpty) {
+      return;
+    }
+
+    // Cancel all existing notifications
+    await flutterLocalNotificationsPlugin!.cancelAll();
+
+    // Define time mappings (hour, minute)
+    Map<String, Map<String, int>> timeMap = {
+      'Morning': {'hour': 8, 'minute': 0},
+      'Afternoon': {'hour': 14, 'minute': 0},
+      'Evening': {'hour': 20, 'minute': 0},
+    };
+
+    int notificationId = 0;
+
+    // Schedule notifications for each habit and time combination
+    for (String habit in selectedHabits) {
+      for (String time in selectedTimes) {
+        if (timeMap.containsKey(time)) {
+          final timeData = timeMap[time]!;
+          
+          const androidPlatformChannelSpecifics = AndroidNotificationDetails(
+            'habit_reminder_channel',
+            'Habit Reminders',
+            channelDescription: 'Habit Reminder Notifications',
+            importance: Importance.high,
+            priority: Priority.high,
+          );
+          const platformChannelSpecifics = NotificationDetails(
+            android: androidPlatformChannelSpecifics,
+            iOS: DarwinNotificationDetails(),
+          );
+
+          await flutterLocalNotificationsPlugin!.zonedSchedule(
+            notificationId++,
+            'Habit Reminder: $habit',
+            "Don't forget to complete your $habit habit!",
+            _nextInstanceOfTime(timeData['hour']!, timeData['minute']!),
+            platformChannelSpecifics,
+            androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+            uiLocalNotificationDateInterpretation:
+                UILocalNotificationDateInterpretation.absoluteTime,
+            matchDateTimeComponents: DateTimeComponents.time,
+          );
+        }
+      }
+    }
+  }
+
+  tz.TZDateTime _nextInstanceOfTime(int hour, int minute) {
+    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+    tz.TZDateTime scheduledDate = tz.TZDateTime(
+      tz.local,
+      now.year,
+      now.month,
+      now.day,
+      hour,
+      minute,
+      0,
+    );
+    if (scheduledDate.isBefore(now)) {
+      scheduledDate = scheduledDate.add(const Duration(days: 1));
+    }
+    return scheduledDate;
   }
 
 
@@ -101,6 +193,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                   notificationsEnabled = value;
                 });
                 _saveNotificationSettings();
+                if (value) {
+                  _scheduleDailyNotifications();
+                } else {
+                  flutterLocalNotificationsPlugin?.cancelAll();
+                }
               },
             ),
             Divider(),
@@ -132,6 +229,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                       }
                     });
                     _saveNotificationSettings();
+                    if (notificationsEnabled) {
+                      _scheduleDailyNotifications();
+                    }
                   },
                 );
               }).toList(),
@@ -158,6 +258,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                       }
                     });
                     _saveNotificationSettings();
+                    if (notificationsEnabled) {
+                      _scheduleDailyNotifications();
+                    }
                   },
                 );
               }).toList(),

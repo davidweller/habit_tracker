@@ -14,8 +14,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
 
   // Default credentials
-  final String defaultUsername = 'testuser';
-  final String defaultPassword = 'password123';
+  final String defaultUsername = 'dave';
+  final String defaultPassword = '12345';
 
   void _login() async {
     final username = _usernameController.text;
@@ -23,8 +23,8 @@ class _LoginScreenState extends State<LoginScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     // Check against default credentials
     if (username == defaultUsername && password == defaultPassword) {
-      await prefs.setString('name', 'Test User');
-      await prefs.setString('username', 'testuser');
+      await prefs.setString('name', 'Dave');
+      await prefs.setString('username', 'dave');
       await prefs.setDouble('age', 25);
       await prefs.setString('country', 'United States');
       Navigator.pushReplacement(
@@ -65,7 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Habitt',
+                  'Habittastic',
                   style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,

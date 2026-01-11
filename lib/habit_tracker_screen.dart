@@ -5,6 +5,7 @@ import 'add_habit_screen.dart';
 import 'login_screen.dart';
 import 'personal_info_screen.dart';
 import 'reports_screen.dart';
+import 'notificatons_screen.dart';
 
 class HabitTrackerScreen extends StatefulWidget {
   final String username;
@@ -153,8 +154,20 @@ class _HabitTrackerScreenState extends State<HabitTrackerScreen> {
               },
             ),
             ListTile(
-              leading: Icon(Icons.notifications),
-              title: Text('Notifications'),
+              leading: const Icon(Icons.notifications),
+              title: const Text('Notifications'),
+              onTap: () {
+                Navigator.pop(context); // Close drawer
+                Future.delayed(const Duration(milliseconds: 100), () {
+                  if (mounted) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => NotificationsScreen()),
+                    );
+                  }
+                });
+              },
             ),
             ListTile(
               leading: const Icon(Icons.logout),

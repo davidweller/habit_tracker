@@ -10,6 +10,7 @@ class HabitTrackerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'Habittastic',
       home: LoginScreen(),
       debugShowCheckedModeBanner: false,
     );

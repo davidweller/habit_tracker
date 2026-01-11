@@ -16,7 +16,7 @@ void main() {
     await tester.pumpWidget(HabitTrackerApp());
 
     // Verify that the login screen is displayed
-    expect(find.text('Habitt'), findsOneWidget);
+    expect(find.text('Habittastic'), findsOneWidget);
     expect(find.text('Log in'), findsOneWidget);
     expect(find.text('Sign up'), findsOneWidget);
   });
