@@ -72,7 +72,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue.shade700,
+        backgroundColor: Colors.green.shade700,
         title: const Text('Personal Info'),
       ),
       body: Padding(
@@ -94,15 +94,15 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
             const SizedBox(height: 16),
             Text(
               'Age: ${_age.round()}',
-              style: TextStyle(color: Colors.blue.shade700, fontSize: 18),
+              style: TextStyle(color: Colors.green.shade700, fontSize: 18),
             ),
             Slider(
               value: _age,
               min: 21,
               max: 100,
               divisions: 79,
-              activeColor: Colors.blue.shade600,
-              inactiveColor: Colors.blue.shade300,
+              activeColor: Colors.green.shade600,
+              inactiveColor: Colors.green.shade300,
               onChanged: (value) {
                 setState(() {
                   _age = value;
@@ -115,7 +115,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(15),
-                border: Border.all(color: Colors.blue.shade700),
+                border: Border.all(color: Colors.green.shade700),
                 boxShadow: const [
                   BoxShadow(
                     color: Colors.black12,
@@ -155,7 +155,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
             ElevatedButton(
               onPressed: _saveUserData,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue.shade700,
+                backgroundColor: Colors.green.shade700,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30.0),
                 ),
@@ -187,7 +187,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: Colors.blue.shade700),
+        border: Border.all(color: Colors.green.shade700),
         boxShadow: const [
           BoxShadow(
             color: Colors.black12,
@@ -199,7 +199,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
       child: TextField(
         controller: controller,
         decoration: InputDecoration(
-          prefixIcon: Icon(icon, color: Colors.blue.shade700),
+          prefixIcon: Icon(icon, color: Colors.green.shade700),
           labelText: label,
           border: InputBorder.none,
         ),

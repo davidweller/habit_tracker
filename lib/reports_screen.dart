@@ -79,7 +79,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue.shade700,
+        backgroundColor: Colors.green.shade700,
         title: const Text(
           'Weekly Report',
           style: TextStyle(

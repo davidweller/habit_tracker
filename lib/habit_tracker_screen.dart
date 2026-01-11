@@ -59,14 +59,14 @@ class _HabitTrackerScreenState extends State<HabitTrackerScreen> {
         print('Error parsing color for $habit: $e');
       }
     }
-    return Colors.blue; // Default color in case of error.
+    return Colors.green; // Default color in case of error.
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue.shade700,
+        backgroundColor: Colors.green.shade700,
         leading: Builder(
           builder: (context) => IconButton(
             icon: Icon(Icons.menu, color: Colors.white),
@@ -90,7 +90,7 @@ class _HabitTrackerScreenState extends State<HabitTrackerScreen> {
           children: [
             DrawerHeader(
               decoration: BoxDecoration(
-                color: Colors.blue.shade700,
+                color: Colors.green.shade700,
               ),
               child: const Text(
                 'Menu',
@@ -315,7 +315,7 @@ class _HabitTrackerScreenState extends State<HabitTrackerScreen> {
                 });
               },
               child: Icon(Icons.add),
-              backgroundColor: Colors.blue.shade700,
+              backgroundColor: Colors.green.shade700,
               tooltip: 'Add Habits',
             )
           : null,

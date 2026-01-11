@@ -187,7 +187,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue.shade700,
+        backgroundColor: Colors.green.shade700,
         title: Text(
           'Register',
           style: TextStyle(
@@ -209,7 +209,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.blue.shade700, Colors.blue.shade900],
+            colors: [Colors.green.shade700, Colors.green.shade900],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -236,8 +236,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   min: 21,
                   max: 100,
                   divisions: 79,
-                  activeColor: Colors.blue.shade600,
-                  inactiveColor: Colors.blue.shade300,
+                  activeColor: Colors.green.shade600,
+                  inactiveColor: Colors.green.shade300,
                   onChanged: (double value) {
                     setState(() {
                       _age = value;
@@ -261,16 +261,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                         decoration: BoxDecoration(
                           color:
-                          isSelected ? Colors.blue.shade600 : Colors.white,
+                          isSelected ? Colors.green.shade600 : Colors.white,
                           borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: Colors.blue.shade700),
+                          border: Border.all(color: Colors.green.shade700),
                         ),
                         child: Text(
                           habit,
                           style: TextStyle(
                             color: isSelected
                                 ? Colors.white
-                                : Colors.blue.shade700,
+                                : Colors.green.shade700,
                           ),
                         ),
                       ),
@@ -282,7 +282,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   child: ElevatedButton(
                     onPressed: _register,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue.shade600,
+                      backgroundColor: Colors.green.shade600,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30.0),
                       ),
@@ -317,7 +317,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       child: TextField(
         controller: controller,
         decoration: InputDecoration(
-          prefixIcon: Icon(icon, color: Colors.blue.shade700),
+          prefixIcon: Icon(icon, color: Colors.green.shade700),
           hintText: hint,
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
@@ -348,7 +348,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             )
           : DropdownButton<String>(
               value: currentValue,
-              icon: Icon(Icons.arrow_drop_down, color: Colors.blue.shade700),
+              icon: Icon(Icons.arrow_drop_down, color: Colors.green.shade700),
               isExpanded: true,
               underline: SizedBox(),
               items: _countries.map((String value) {

@@ -177,7 +177,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue.shade700,
+        backgroundColor: Colors.green.shade700,
         title: Text('Notifications'),
       ),
       body: Padding(
@@ -272,7 +272,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               },
               child: Text('Send Test Notification'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue.shade700,
+                backgroundColor: Colors.green.shade700,
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),

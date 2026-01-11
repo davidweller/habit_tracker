@@ -55,7 +55,7 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue.shade700,
+        backgroundColor: Colors.green.shade700,
         title: Text('Configure Habits'),
       ),
       body: Padding(
@@ -131,7 +131,7 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
                 style: TextStyle(color: Colors.white, fontSize: 16),
               ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue.shade700,
+                backgroundColor: Colors.green.shade700,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),

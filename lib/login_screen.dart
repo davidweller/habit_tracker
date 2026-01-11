@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'habit_tracker_screen.dart';
 import 'register_screen.dart';
 
@@ -59,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.blue.shade700, Colors.blue.shade900],
+            colors: [Colors.green.shade700, Colors.green.shade900],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -72,10 +73,11 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 Text(
                   'Habittastic',
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
+                  style: GoogleFonts.poppins(
+                    fontSize: 36,
+                    fontWeight: FontWeight.w700,
                     color: Colors.white,
+                    letterSpacing: 1.2,
                   ),
                 ),
                 SizedBox(height: 30),
@@ -88,7 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     controller: _usernameController,
                     decoration: InputDecoration(
                       prefixIcon:
-                          Icon(Icons.person, color: Colors.blue.shade700),
+                          Icon(Icons.person, color: Colors.green.shade700),
                       hintText: 'Enter Username',
                       border: InputBorder.none,
                       contentPadding:
@@ -107,7 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
                       prefixIcon:
-                          Icon(Icons.email, color: Colors.blue.shade700),
+                          Icon(Icons.email, color: Colors.green.shade700),
                       hintText: 'Enter Email',
                       border: InputBorder.none,
                       contentPadding:
@@ -125,7 +127,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     controller: _passwordController,
                     obscureText: true,
                     decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.lock, color: Colors.blue.shade700),
+                      prefixIcon: Icon(Icons.lock, color: Colors.green.shade700),
                       hintText: 'Enter Password',
                       border: InputBorder.none,
                       contentPadding:
@@ -150,7 +152,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ElevatedButton(
                   onPressed: _login,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue.shade600,
+                    backgroundColor: Colors.green.shade600,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30.0),
                     ),
@@ -179,7 +181,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue.shade600,
+                    backgroundColor: Colors.green.shade600,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30.0),
                     ),
