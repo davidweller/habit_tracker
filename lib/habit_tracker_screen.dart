@@ -40,6 +40,46 @@ class _HabitTrackerScreenState extends State<HabitTrackerScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('selectedHabitsMap', jsonEncode(selectedHabitsMap));
     await prefs.setString('completedHabitsMap', jsonEncode(completedHabitsMap));
+    _updateWeeklyData();
+  }
+
+  // Update weekly data when habits are completed
+  Future<void> _updateWeeklyData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    
+    // Get current day of week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
+    // We'll convert to our format: 0 = Monday, 1 = Tuesday, ..., 6 = Sunday
+    DateTime now = DateTime.now();
+    int dayOfWeek = now.weekday - 1; // Convert to 0-6 where 0 is Monday
+    
+    // Load existing weekly data
+    String? storedData = prefs.getString('weeklyData');
+    Map<String, List<int>> weeklyData = {};
+    
+    if (storedData != null) {
+      Map<String, dynamic> decoded = jsonDecode(storedData);
+      weeklyData = decoded.map((key, value) => 
+        MapEntry(key, List<int>.from(value)));
+    }
+    
+    // Get all habits (selected + completed)
+    Map<String, String> allHabitsMap = {};
+    allHabitsMap.addAll(selectedHabitsMap);
+    allHabitsMap.addAll(completedHabitsMap);
+    
+    // Update weekly data for each habit
+    for (String habit in allHabitsMap.keys) {
+      // Initialize habit data if it doesn't exist
+      if (!weeklyData.containsKey(habit)) {
+        weeklyData[habit] = List.filled(7, 0);
+      }
+      
+      // Update today's completion status (1 = completed, 0 = not completed)
+      weeklyData[habit]![dayOfWeek] = completedHabitsMap.containsKey(habit) ? 1 : 0;
+    }
+    
+    // Save updated weekly data
+    await prefs.setString('weeklyData', jsonEncode(weeklyData));
   }
 
   Color _getColorFromHex(String hexColor) {
@@ -148,7 +188,9 @@ class _HabitTrackerScreenState extends State<HabitTrackerScreen> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => const ReportsScreen()),
-                    );
+                    ).then((_) {
+                      // Reports screen will auto-refresh when opened
+                    });
                   }
                 });
               },

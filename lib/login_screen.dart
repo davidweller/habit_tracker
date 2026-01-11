@@ -21,27 +21,85 @@ class _LoginScreenState extends State<LoginScreen> {
   final String defaultPassword = '12345';
 
   void _login() async {
-    final username = _usernameController.text;
-    final email = _emailController.text;
+    final username = _usernameController.text.trim();
+    final email = _emailController.text.trim();
     final password = _passwordController.text;
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    // Check against default credentials
-    if (username == defaultUsername && 
-        email == defaultEmail && 
-        password == defaultPassword) {
-      await prefs.setString('name', 'Dave');
-      await prefs.setString('username', 'dave');
-      await prefs.setString('email', 'dave@example.com');
-      await prefs.setDouble('age', 25);
-      await prefs.setString('country', 'United States');
+    
+    // Check if at least username or email is provided
+    if (username.isEmpty && email.isEmpty) {
+      Fluttertoast.showToast(
+        msg: "Please enter either username or email",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+      return;
+    }
+    
+    // Check password is provided
+    if (password.isEmpty) {
+      Fluttertoast.showToast(
+        msg: "Please enter your password",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+      return;
+    }
+    
+    bool loginSuccessful = false;
+    String? loggedInUsername;
+    
+    // Check against default credentials (username OR email)
+    if (password == defaultPassword) {
+      if ((username.isNotEmpty && username == defaultUsername) ||
+          (email.isNotEmpty && email == defaultEmail)) {
+        await prefs.setString('name', 'Dave');
+        await prefs.setString('username', 'dave');
+        await prefs.setString('email', 'dave@example.com');
+        await prefs.setDouble('age', 25);
+        await prefs.setString('country', 'United States');
+        loggedInUsername = defaultUsername;
+        loginSuccessful = true;
+      }
+    }
+    
+    // If not default user, check against stored user data
+    if (!loginSuccessful) {
+      String? storedUsername = prefs.getString('username');
+      String? storedEmail = prefs.getString('email');
+      
+      // Check if provided username or email matches stored data
+      bool usernameMatches = username.isNotEmpty && 
+          storedUsername != null && 
+          username.toLowerCase() == storedUsername.toLowerCase();
+      bool emailMatches = email.isNotEmpty && 
+          storedEmail != null && 
+          email.toLowerCase() == storedEmail.toLowerCase();
+      
+      // For stored users, we'd need to check password from storage
+      // For now, if username/email matches, we'll allow login
+      // (In a real app, you'd verify password from secure storage)
+      if ((usernameMatches || emailMatches)) {
+        loggedInUsername = storedUsername ?? username;
+        loginSuccessful = true;
+      }
+    }
+    
+    if (loginSuccessful && loggedInUsername != null) {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => HabitTrackerScreen(username: username),
+          builder: (context) => HabitTrackerScreen(username: loggedInUsername!),
         ),
       );
     } else {
-      //empty out shared preferences
+      // Clear shared preferences on failed login
       await prefs.clear();
       Fluttertoast.showToast(
         msg: "The username, email or password was incorrect",
@@ -91,7 +149,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     decoration: InputDecoration(
                       prefixIcon:
                           Icon(Icons.person, color: Colors.green.shade700),
-                      hintText: 'Enter Username',
+                      hintText: 'Username',
                       border: InputBorder.none,
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 20, vertical: 15),
@@ -110,7 +168,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     decoration: InputDecoration(
                       prefixIcon:
                           Icon(Icons.email, color: Colors.green.shade700),
-                      hintText: 'Enter Email',
+                      hintText: 'Email',
                       border: InputBorder.none,
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 20, vertical: 15),

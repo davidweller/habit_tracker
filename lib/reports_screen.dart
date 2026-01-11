@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -33,17 +32,24 @@ class _ReportsScreenState extends State<ReportsScreen> {
   Future<void> _loadWeeklyData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    // Get the selected habits from the map
+    // Get all habits (selected + completed) from the maps
+    Map<String, String> allHabitsMap = {};
+    
     String? selectedHabitsMapString = prefs.getString('selectedHabitsMap');
     if (selectedHabitsMapString != null) {
-      Map<String, dynamic> selectedHabitsMap =
-      jsonDecode(selectedHabitsMapString);
-      selectedHabits = selectedHabitsMap.keys.toList();
-    } else {
-      selectedHabits = [];
+      Map<String, dynamic> selectedHabitsMap = jsonDecode(selectedHabitsMapString);
+      allHabitsMap.addAll(Map<String, String>.from(selectedHabitsMap));
     }
+    
+    String? completedHabitsMapString = prefs.getString('completedHabitsMap');
+    if (completedHabitsMapString != null) {
+      Map<String, dynamic> completedHabitsMap = jsonDecode(completedHabitsMapString);
+      allHabitsMap.addAll(Map<String, String>.from(completedHabitsMap));
+    }
+    
+    selectedHabits = allHabitsMap.keys.toList();
 
-    // If no habits are selected, reset weeklyData
+    // If no habits exist, reset weeklyData
     if (selectedHabits.isEmpty) {
       setState(() {
         weeklyData = {};
@@ -51,27 +57,35 @@ class _ReportsScreenState extends State<ReportsScreen> {
       return;
     }
 
-    // Load the data from shared preferences or generate random mixed data if none exists
+    // Load the data from shared preferences or initialize with zeros if none exists
     String? storedData = prefs.getString('weeklyData');
     if (storedData == null) {
-      Map<String, List<int>> mixedData = {
+      // Initialize with all zeros (no completions yet)
+      Map<String, List<int>> initialData = {
         for (var habit in selectedHabits)
-          habit: List.generate(
-              7,
-                  (_) =>
-              Random().nextBool() ? 1 : 0), // Generate a mix of 0s and 1s
+          habit: List.filled(7, 0), // All zeros initially
       };
-      await prefs.setString('weeklyData', jsonEncode(mixedData));
-      storedData = jsonEncode(mixedData);
+      await prefs.setString('weeklyData', jsonEncode(initialData));
+      storedData = jsonEncode(initialData);
     }
 
-    // Decode and set weekly data
+    // Decode and set weekly data (storedData is guaranteed to be non-null here)
+    String dataToDecode = storedData;
+    Map<String, dynamic> decodedData = jsonDecode(dataToDecode);
+    Map<String, List<int>> loadedData = decodedData.map((key, value) => MapEntry(
+      key,
+      List<int>.from(value),
+    ));
+    
+    // Ensure all current habits have weekly data entries
+    for (var habit in selectedHabits) {
+      if (!loadedData.containsKey(habit)) {
+        loadedData[habit] = List.filled(7, 0);
+      }
+    }
+    
     setState(() {
-      Map<String, dynamic> decodedData = jsonDecode(storedData!);
-      weeklyData = decodedData.map((key, value) => MapEntry(
-        key,
-        List<int>.from(value),
-      ));
+      weeklyData = loadedData;
     });
   }
 
