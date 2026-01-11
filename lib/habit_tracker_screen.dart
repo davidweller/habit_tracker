@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'add_habit_screen.dart';
+import 'login_screen.dart';
 
 class HabitTrackerScreen extends StatefulWidget {
   final String username;
@@ -63,6 +64,14 @@ class _HabitTrackerScreenState extends State<HabitTrackerScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue.shade700,
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: Icon(Icons.menu, color: Colors.white),
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+          ),
+        ),
         title: Text(
           name.isNotEmpty ? name : 'Loading...',
           style: const TextStyle(
@@ -71,7 +80,46 @@ class _HabitTrackerScreenState extends State<HabitTrackerScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        automaticallyImplyLeading: true,
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue.shade700,
+              ),
+              child: Text(
+                'Menu',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.settings),
+              title: Text('Configure'),
+            ),
+            ListTile(
+              leading: Icon(Icons.person),
+              title: Text('Personal Info'),
+            ),
+            ListTile(
+              leading: Icon(Icons.analytics),
+              title: Text('Reports'),
+            ),
+            ListTile(
+              leading: Icon(Icons.notifications),
+              title: Text('Notifications'),
+            ),
+            ListTile(
+              leading: Icon(Icons.logout),
+              title: Text('Sign Out'),
+            ),
+          ],
+        ),
       ),
       body: Column(
         children: [

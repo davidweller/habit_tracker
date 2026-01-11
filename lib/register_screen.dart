@@ -16,7 +16,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _nameController = TextEditingController();
   final _usernameController = TextEditingController();
   double _age = 25; // Default age set to 25
-  String _country = 'United States';
+  String _country = '';
   List<String> _countries = [];
   List<String> selectedHabits = [];
   List<String> availableHabits = [
@@ -49,12 +49,79 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Future<void> _loadCountries() async {
     try {
       List<String> countries = await fetchCountries();
+      countries.sort(); // Sort countries alphabetically
       setState(() {
         _countries = countries;
+        // Set default country to first in sorted list if not set
+        if (_country.isEmpty && countries.isNotEmpty) {
+          _country = countries.first;
+        }
       });
     } catch (e) {
-      // Handle error
-      _showToast('Error fetching countries');
+      // Handle error - show more detailed message
+      print('Error loading countries: $e');
+      _showToast('Error fetching countries. Using default list.');
+      // Fallback to a comprehensive list if API fails
+      setState(() {
+        _countries = [
+          'Afghanistan',
+          'Albania',
+          'Algeria',
+          'Argentina',
+          'Australia',
+          'Austria',
+          'Bangladesh',
+          'Belgium',
+          'Brazil',
+          'Canada',
+          'Chile',
+          'China',
+          'Colombia',
+          'Denmark',
+          'Egypt',
+          'Finland',
+          'France',
+          'Germany',
+          'Greece',
+          'India',
+          'Indonesia',
+          'Iran',
+          'Ireland',
+          'Israel',
+          'Italy',
+          'Japan',
+          'Kenya',
+          'Malaysia',
+          'Mexico',
+          'Netherlands',
+          'New Zealand',
+          'Nigeria',
+          'Norway',
+          'Pakistan',
+          'Philippines',
+          'Poland',
+          'Portugal',
+          'Russia',
+          'Saudi Arabia',
+          'Singapore',
+          'South Africa',
+          'South Korea',
+          'Spain',
+          'Sweden',
+          'Switzerland',
+          'Thailand',
+          'Turkey',
+          'Ukraine',
+          'United Arab Emirates',
+          'United Kingdom',
+          'United States',
+          'Vietnam'
+        ];
+        _countries.sort();
+        if (_country.isEmpty) {
+          _country = _countries.first;
+        }
+      });
     }
   }
   void _showToast(String message) {
@@ -249,29 +316,42 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Widget _buildCountryDropdown() {
+    // Ensure _country is valid or set to first country if list is available
+    String? currentValue = _country.isNotEmpty && _countries.contains(_country)
+        ? _country
+        : (_countries.isNotEmpty ? _countries.first : null);
+    
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(30),
       ),
-      child: DropdownButton<String>(
-        value: _country,
-        icon: Icon(Icons.arrow_drop_down, color: Colors.blue.shade700),
-        isExpanded: true,
-        underline: SizedBox(),
-        items: _countries.map((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
-          );
-        }).toList(),
-        onChanged: (newValue) {
-          setState(() {
-            _country = newValue!;
-          });
-        },
-      ),
+      child: _countries.isEmpty
+          ? Padding(
+              padding: EdgeInsets.symmetric(vertical: 16),
+              child: Text(
+                'Loading countries...',
+                style: TextStyle(color: Colors.grey),
+              ),
+            )
+          : DropdownButton<String>(
+              value: currentValue,
+              icon: Icon(Icons.arrow_drop_down, color: Colors.blue.shade700),
+              isExpanded: true,
+              underline: SizedBox(),
+              items: _countries.map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              onChanged: (newValue) {
+                setState(() {
+                  _country = newValue!;
+                });
+              },
+            ),
     );
   }
 }
