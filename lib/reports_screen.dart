@@ -88,20 +88,20 @@ class _ReportsScreenState extends State<ReportsScreen> {
       ),
       body: weeklyData.isEmpty
           ? const Center(
-        child: Text(
-          'No data available. Please configure habits first.',
-          style: TextStyle(fontSize: 16, color: Colors.grey),
-        ),
-      )
+              child: Text(
+                'No data available. Please configure habits first.',
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
+            )
           : SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: SingleChildScrollView(
-          child: DataTable(
-            columns: _buildColumns(),
-            rows: _buildRows(),
-          ),
-        ),
-      ),
+              scrollDirection: Axis.horizontal,
+              child: SingleChildScrollView(
+                child: DataTable(
+                  columns: _buildColumns(),
+                  rows: _buildRows(),
+                ),
+              ),
+            ),
     );
   }
 
@@ -111,11 +111,11 @@ class _ReportsScreenState extends State<ReportsScreen> {
         label: Text('Habit', style: TextStyle(fontWeight: FontWeight.bold)),
       ),
       ...daysOfWeek.map((day) => DataColumn(
-        label: Text(
-          day,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-      )),
+            label: Text(
+              day,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          )),
     ];
   }
 
