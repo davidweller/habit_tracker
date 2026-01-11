@@ -11,20 +11,26 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
   // Default credentials
   final String defaultUsername = 'dave';
+  final String defaultEmail = 'dave@example.com';
   final String defaultPassword = '12345';
 
   void _login() async {
     final username = _usernameController.text;
+    final email = _emailController.text;
     final password = _passwordController.text;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     // Check against default credentials
-    if (username == defaultUsername && password == defaultPassword) {
+    if (username == defaultUsername && 
+        email == defaultEmail && 
+        password == defaultPassword) {
       await prefs.setString('name', 'Dave');
       await prefs.setString('username', 'dave');
+      await prefs.setString('email', 'dave@example.com');
       await prefs.setDouble('age', 25);
       await prefs.setString('country', 'United States');
       Navigator.pushReplacement(
@@ -37,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
       //empty out shared preferences
       await prefs.clear();
       Fluttertoast.showToast(
-        msg: "The username or password was incorrect",
+        msg: "The username, email or password was incorrect",
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         backgroundColor: Colors.red,
@@ -82,8 +88,27 @@ class _LoginScreenState extends State<LoginScreen> {
                     controller: _usernameController,
                     decoration: InputDecoration(
                       prefixIcon:
-                          Icon(Icons.email, color: Colors.blue.shade700),
+                          Icon(Icons.person, color: Colors.blue.shade700),
                       hintText: 'Enter Username',
+                      border: InputBorder.none,
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: TextField(
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                      prefixIcon:
+                          Icon(Icons.email, color: Colors.blue.shade700),
+                      hintText: 'Enter Email',
                       border: InputBorder.none,
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 20, vertical: 15),
@@ -146,15 +171,15 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: TextStyle(color: Colors.white70),
                 ),
                 SizedBox(height: 10),
-                OutlinedButton(
+                ElevatedButton(
                   onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => RegisterScreen()),
                     );
                   },
-                  style: OutlinedButton.styleFrom(
-                    side: BorderSide(color: Colors.white),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue.shade600,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30.0),
                     ),
@@ -162,8 +187,36 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   child: Text(
                     'Sign up',
-                    style: TextStyle(color: Colors.white, fontSize: 16),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
+                ),
+                SizedBox(height: 15),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Already have an account? ',
+                      style: TextStyle(color: Colors.white70),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        // Already on login page, so this could scroll to top or do nothing
+                        // Or navigate to login if coming from elsewhere
+                      },
+                      child: Text(
+                        'Login',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

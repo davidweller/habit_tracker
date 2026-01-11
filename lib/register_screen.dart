@@ -15,6 +15,7 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final _nameController = TextEditingController();
   final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
   double _age = 25; // Default age set to 25
   String _country = '';
   List<String> _countries = [];
@@ -137,8 +138,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void _register() async {
     final name = _nameController.text;
     final username = _usernameController.text;
-    if (username.isEmpty || name.isEmpty) {
-      _showToast('Please fill in all fields');
+    final email = _emailController.text;
+    if (username.isEmpty || name.isEmpty || email.isEmpty) {
+      _showToast('Please fill in all required fields');
+      return;
+    }
+    // Basic email validation
+    if (!email.contains('@') || !email.contains('.')) {
+      _showToast('Please enter a valid email address');
       return;
     }
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -154,6 +161,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     // Save user information and habits to shared preferences.
     await prefs.setString('name', name);
     await prefs.setString('username', username);
+    await prefs.setString('email', email);
     await prefs.setDouble('age', _age);
     await prefs.setString('country', _country);
     await prefs.setString('selectedHabitsMap', jsonEncode(selectedHabitsMap));
@@ -217,6 +225,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 SizedBox(height: 10),
                 _buildInputField(
                     _usernameController, 'Username', Icons.alternate_email),
+                SizedBox(height: 10),
+                _buildInputField(
+                    _emailController, 'Email', Icons.email),
                 SizedBox(height: 10),
                 Text('Age: ${_age.round()}',
                     style: TextStyle(color: Colors.white, fontSize: 18)),
